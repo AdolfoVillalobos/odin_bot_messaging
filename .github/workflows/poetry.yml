@@ -16,3 +16,23 @@ jobs:
       - run: poetry --version
         env:
           POETRY_HTTP_BASIC_MY_REPOSITORY_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Load cached venv
+          id: cached-poetry-dependencies
+          uses: actions/cache@v2
+          with:
+            path: .venv
+            key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+
+      - name: Install library
+        run: poetry install --no-interaction
+
+      - name: Run tests
+        run: |
+          source .venv/bin/activate
+          pytest tests/
+          coverage report
