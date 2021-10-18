@@ -18,3 +18,5 @@ jobs:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
       - run: poetry --version
+        env:
+        POETRY_HTTP_BASIC_MY_REPOSITORY_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
