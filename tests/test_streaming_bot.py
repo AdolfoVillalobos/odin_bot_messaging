@@ -1,44 +1,48 @@
-# import unittest
-# import asyncio
-# from dotenv.main import load_dotenv
+import unittest
+import asyncio
+import os
 
-# from odin_messaging_bot.streaming_bot import MessagingBot
+from odin_messaging_bot.streaming_bot import MessagingBot
 
-# import nest_asyncio
+import nest_asyncio
 
-# nest_asyncio.apply()
+nest_asyncio.apply()
 
 
-# class TestMessagingBot(unittest.IsolatedAsyncioTestCase):
-#     async def asyncSetUp(self):
-#         load_dotenv(".env")
-#         self.loop = asyncio.get_running_loop()
-#         credentials = NatsStreamingEnv()
-#         self.bot = MessagingBot(botname="ODINTestBot", credentials=credentials)
-#         await self.bot.connect_nats_streaming()
+class TestMessagingBot(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
 
-#     async def test_connect_nats_streaming(self):
-#         self.assertEqual(self.bot.botname, "ODINTestBot")
-#         self.assertTrue(self.bot.nc.is_connected)
-#         self.assertTrue(self.bot.sc._conn_id != None)
+        self.loop = asyncio.get_running_loop()
+        nats_url = os.getenv("NATS_URL")
+        stan_client_id = os.getenv("STAN_CLIENT_ID")
+        stan_cluster_id = os.getenv("STAN_CLUSTER_ID")
+        pod_name = os.getenv("POD_NAME")
+        self.bot = MessagingBot(botname="ODINTestBot", nats_url=nats_url,
+                                stan_client_id=stan_client_id, stan_cluster_id=stan_cluster_id, pod_name=pod_name)
+        await self.bot.connect_nats_streaming()
 
-#     async def test_bot_basic_subscriptions(self):
-#         msgs = []
+    async def test_connect_nats_streaming(self):
+        self.assertEqual(self.bot.botname, "ODINTestBot")
+        self.assertTrue(self.bot.nc.is_connected)
+        self.assertTrue(self.bot.sc._conn_id != None)
 
-#         for i in range(0, 1):
-#             await self.bot.publish(subject="hi", payload=b"hello")
+    async def test_bot_basic_subscriptions(self):
+        msgs = []
 
-#         future = asyncio.Future(loop=self.loop)
+        for i in range(0, 1):
+            await self.bot.publish(subject="hi", payload=b"hello")
 
-#         async def cb(msg):
-#             nonlocal future
-#             nonlocal msgs
-#             msgs.append(msg)
-#             if len(msgs) >= 1:
-#                 future.set_result(None)
+        future = asyncio.Future(loop=self.loop)
 
-#         await self.bot.subscribe(subject="hi", cb=cb)
-#         await asyncio.wait_for(future, 10, loop=self.loop)
+        async def cb(msg):
+            nonlocal future
+            nonlocal msgs
+            msgs.append(msg)
+            if len(msgs) >= 1:
+                future.set_result(None)
 
-#         self.assertEqual(len(msgs), 1)
-#         self.assertTrue(True)
+        await self.bot.subscribe(subject="hi", cb=cb)
+        await asyncio.wait_for(future, 10, loop=self.loop)
+
+        self.assertEqual(len(msgs), 1)
+        self.assertTrue(True)
