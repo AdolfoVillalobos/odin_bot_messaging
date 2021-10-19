@@ -6,8 +6,19 @@ jobs:
 
   setup:
     runs-on: ubuntu-latest
+    env:
+      NATS_URL: nats://0.0.0.0:4222
+      STAN_CLUSTER_ID: test-cluster
+      STAN_CLIENT_ID: accountant_odin
+      POD_NAME: test
+      VAULT_HOST: host
+      VAULT_PORT: 820
   
     steps:
+
+      - name: Start development containters
+        run: docker-compose -f "docker-compose.test.yml" up -d --build
+
       - name: Check out repository
         uses: actions/checkout@v2
       - name: Set up python
@@ -44,3 +55,8 @@ jobs:
           source .venv/bin/activate
           pytest tests/
           coverage report
+
+      
+      - name: Stop containers
+        if: always()
+        run: docker-compose -f "docker-compose.test.yml" down

@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  odin-nats:
+    image: nats-streaming
+    ports:
+      - 4222:4222
+      - 8222:8222
+    networks:
+      - odin_proxy
+    restart: always
+
+networks:
+  odin_proxy:
+    driver: bridge
+
+volumes:
+  redisdata:
+  mongo:
+
