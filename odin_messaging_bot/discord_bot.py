@@ -5,8 +5,6 @@ import datetime
 from typing import List
 from dataclasses import dataclass
 
-from base.entities import Transaction, Wallet, Balance
-
 logging.basicConfig(level=logging.DEBUG,
                     format="%(levelname)s:%(asctime)s:%(message)s")
 
@@ -52,12 +50,12 @@ class DiscordBot:
             logging.debug(err)
             raise err
 
-    async def send_new_transaction(self, transaction: Transaction, description: str):
+    async def send_embeded_field(self, field_name: str, field_value: str,  description: str):
         try:
             field = [
                 {
-                    "name": f"{transaction.exchange.upper()} -  {transaction.id}",
-                    "value": str(transaction),
+                    "name": field_name,
+                    "value": field_value,
                 }
             ]
             embed = get_embed(title=description, color="orange", fields=field)
@@ -67,56 +65,56 @@ class DiscordBot:
             logging.debug(err)
             raise err
 
-    async def send_balance(self, wallets: List[Wallet], balance: Balance):
-        try:
-            fields = []
-            balance_field = {"name": "General Balance", "value": str(balance)}
-            fields.append(balance_field)
+    # async def send_balance(self, wallets: List[Wallet], balance: Balance):
+    #     try:
+    #         fields = []
+    #         balance_field = {"name": "General Balance", "value": str(balance)}
+    #         fields.append(balance_field)
 
-            for wallet in wallets:
-                wallet_field = {
-                    "name": wallet.exchange.upper(), "value": str(wallet)}
-                fields.append(wallet_field)
+    #         for wallet in wallets:
+    #             wallet_field = {
+    #                 "name": wallet.exchange.upper(), "value": str(wallet)}
+    #             fields.append(wallet_field)
 
-            embed = get_embed(title="New Balance",
-                              color="purple2", fields=fields)
+    #         embed = get_embed(title="New Balance",
+    #                           color="purple2", fields=fields)
 
-            await self.send_discord_message(embeds=[embed])
-            logging.info("Sent Balance to Discord")
-        except Exception as err:
-            logging.debug(err)
-            raise err
+    #         await self.send_discord_message(embeds=[embed])
+    #         logging.info("Sent Balance to Discord")
+    #     except Exception as err:
+    #         logging.debug(err)
+    #         raise err
 
-    async def send_error_message(self, microservice: str, error_message: str):
-        try:
-            fields = [
-                {
-                    "name": f"Error in {microservice}",
-                    "value": f" Message: {error_message}",
-                }
-            ]
+    # async def send_error_message(self, microservice: str, error_message: str):
+    #     try:
+    #         fields = [
+    #             {
+    #                 "name": f"Error in {microservice}",
+    #                 "value": f" Message: {error_message}",
+    #             }
+    #         ]
 
-            embed = get_embed(title="Error Message",
-                              color="red", fields=fields)
-            await self.send_discord_message(embeds=[embed])
-            logging.info("Sent Error Message")
+    #         embed = get_embed(title="Error Message",
+    #                           color="red", fields=fields)
+    #         await self.send_discord_message(embeds=[embed])
+    #         logging.info("Sent Error Message")
 
-        except Exception as err:
-            logging.debug(err)
-            raise err
+    #     except Exception as err:
+    #         logging.debug(err)
+    #         raise err
 
-    async def send_unbalance(self, unbalanced_field: str, target_exchange: str):
-        try:
-            fields = [
-                {
-                    "name": f"Unbalanced in { target_exchange.upper() }",
-                    "value": unbalanced_field,
-                }
-            ]
-            embed = get_embed(title="Unbalanced Wallet",
-                              color="red", fields=fields)
-            await self.send_discord_message(embeds=[embed])
-            logging.info(f"Sent unbalance to discord")
-        except Exception as err:
-            logging.debug(err)
-            raise err
+    # async def send_unbalance(self, unbalanced_field: str, target_exchange: str):
+    #     try:
+    #         fields = [
+    #             {
+    #                 "name": f"Unbalanced in { target_exchange.upper() }",
+    #                 "value": unbalanced_field,
+    #             }
+    #         ]
+    #         embed = get_embed(title="Unbalanced Wallet",
+    #                           color="red", fields=fields)
+    #         await self.send_discord_message(embeds=[embed])
+    #         logging.info(f"Sent unbalance to discord")
+    #     except Exception as err:
+    #         logging.debug(err)
+    #         raise err
