@@ -1,6 +1,7 @@
 import json
 import random
 import asyncio
+import nats
 import logging
 
 from dataclasses import dataclass, field
@@ -25,15 +26,16 @@ class MessagingBot:
     async def connect_nats_streaming(self):
         logging.info("Connecting Bot to NATS Streaming")
         try:
-            random_number = random.randint(0, 1000)
+            # random_number = random.randint(0, 1000)
             await self.nc.connect(servers=[self.nats_url])
             await self.sc.connect(
                 cluster_id=self.stan_cluster_id,
-                client_id=f"{self.stan_client_id}_{self.pod_name}_{random_number}",
+                client_id=f"{self.stan_client_id}_{self.pod_name}",
                 nats=self.nc,
             )
             logging.info("NATS Streaming Connected")
         except Exception as err:
+            logging.debug(f"Could not conenct to NATS")
             logging.error(err)
 
     async def cb_ack(self, message):
@@ -64,3 +66,31 @@ class MessagingBot:
         new_message = json.dumps(failed_message).encode()
         await asyncio.sleep(self.WAIT_RETRY_MESSAGE)
         await self.publish(subject, new_message)
+
+    async def pong_callback(self, message):
+        nc = self.nc
+        response = f"{self.botname} - PONG"
+        await nc.publish(message.reply, response.encode(encoding="UTF-8"))
+
+    async def await_for_ping(self, microservice_channel: str):
+        nc = self.nc
+        await nc.subscribe(subject=microservice_channel, cb=self.pong_callback)
+
+    async def request_pong(self, microservice_channel: str):
+        try:
+            data = f"{self.botname} - PING"
+            future = self.nc.request(
+                microservice_channel, data.encode(), timeout=10)
+            logging.info(
+                f"Liveliness: Asking {microservice_channel} for Response")
+            msg = await future
+            subject = msg.subject
+            data = msg.data.decode()
+            logging.info(
+                f"Liveliness: Obtained Response from {microservice_channel}")
+            logging.info(subject)
+            return True
+        except nats.aio.errors.ErrTimeout:
+            logging.error(
+                f"Liveliness: Did not receive response from {microservice_channel}")
+            return False

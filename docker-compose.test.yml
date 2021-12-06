@@ -14,6 +14,7 @@ networks:
     driver: bridge
 
 volumes:
-  redisdata:
+  redisdata: null
   mongo:
 
+    null
