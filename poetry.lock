@@ -42,7 +42,7 @@ typing-extensions = ">=3.6.5"
 
 [[package]]
 name = "asyncio-nats-client"
-version = "0.11.5"
+version = "0.11.4"
 description = "NATS client for Python Asyncio"
 category = "main"
 optional = false
@@ -147,17 +147,6 @@ description = "multidict implementation"
 category = "main"
 optional = false
 python-versions = ">=3.6"
-
-[[package]]
-name = "nats-py"
-version = "2.0.0rc3"
-description = "NATS client for Python"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.extras]
-nkeys = ["nkeys"]
 
 [[package]]
 name = "nest-asyncio"
@@ -319,7 +308,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "6c2a6e76ce705d3c358a5d09cfe095972e905cccfac279371d731d1bfb2ab27b"
+content-hash = "061bfec4ecf2e71b6d299bd4c6441250b3f0d2c6083d1decdc3fbde6e88b7699"
 
 [metadata.files]
 aiohttp = [
@@ -405,7 +394,7 @@ async-timeout = [
     {file = "async_timeout-4.0.1-py3-none-any.whl", hash = "sha256:a22c0b311af23337eb05fcf05a8b51c3ea53729d46fb5460af62bee033cec690"},
 ]
 asyncio-nats-client = [
-    {file = "asyncio-nats-client-0.11.5.tar.gz", hash = "sha256:c6a2855a63db68289bb270240670ff30514ba0082a8b4f759b8e9955ac84c575"},
+    {file = "asyncio-nats-client-0.11.4.tar.gz", hash = "sha256:ede58bda6560cf4206059799597be9be7ba28a479c4d118cf00bda6e4471bf2e"},
 ]
 asyncio-nats-streaming = [
     {file = "asyncio-nats-streaming-0.4.0.tar.gz", hash = "sha256:1fecb125917b438028e6eb753cdc1689dd1c7c86df8a9808534d9fc1711b0aa6"},
@@ -585,9 +574,6 @@ multidict = [
     {file = "multidict-5.2.0-cp39-cp39-win32.whl", hash = "sha256:1c7976cd1c157fa7ba5456ae5d31ccdf1479680dc9b8d8aa28afabc370df42b8"},
     {file = "multidict-5.2.0-cp39-cp39-win_amd64.whl", hash = "sha256:c9631c642e08b9fff1c6255487e62971d8b8e821808ddd013d8ac058087591ac"},
     {file = "multidict-5.2.0.tar.gz", hash = "sha256:0dd1c93edb444b33ba2274b66f63def8a327d607c6c790772f448a53b6ea59ce"},
-]
-nats-py = [
-    {file = "nats-py-2.0.0rc3.tar.gz", hash = "sha256:46a576b123788517ca0b6782a8df1d684ce18d0fab813a8b94aa5dabd6df1f91"},
 ]
 nest-asyncio = [
     {file = "nest_asyncio-1.5.4-py3-none-any.whl", hash = "sha256:3fdd0d6061a2bb16f21fe8a9c6a7945be83521d81a0d15cff52e9edee50101d6"},
